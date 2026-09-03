@@ -5,7 +5,7 @@ import json
 URL = "https://raw.githubusercontent.com/zieng2/wl/refs/heads/main/vless_universal.txt"
 
 def parse_vless_url(url, prefix, index):
-    """Разбирает vless:// ссылку и генерирует уникальный тег"""
+    """Разбирает vless:// ссылку и генерирует чистый outbound Xray"""
     parsed = urllib.parse.urlparse(url)
     if parsed.scheme != 'vless':
         return None, None
@@ -19,8 +19,16 @@ def parse_vless_url(url, prefix, index):
 
     security = get_qs("security", "none")
     network = get_qs("type", "tcp")
-    # Тег будет выглядеть как cand-eu-01 или cand-ru-01
     tag = f"cand-{prefix}-{index:02d}"
+
+    # Формируем юзера, добавляем flow ТОЛЬКО если он реально есть
+    user = {
+        "id": uuid,
+        "encryption": get_qs("encryption", "none")
+    }
+    flow = get_qs("flow")
+    if flow:
+        user["flow"] = flow
 
     outbound = {
         "tag": tag,
@@ -29,11 +37,7 @@ def parse_vless_url(url, prefix, index):
             "vnext": [{
                 "address": address,
                 "port": int(port),
-                "users": [{
-                    "id": uuid,
-                    "encryption": get_qs("encryption", "none"),
-                    "flow": get_qs("flow", "")
-                }]
+                "users": [user]
             }]
         },
         "streamSettings": {
@@ -42,36 +46,36 @@ def parse_vless_url(url, prefix, index):
         }
     }
 
+    # Безопасное формирование Reality/TLS без лишних ключей
     if security == "reality":
-        outbound["streamSettings"]["realitySettings"] = {
+        reality_settings = {
             "serverName": get_qs("sni"),
             "publicKey": get_qs("pbk"),
-            "shortId": get_qs("sid"),
-            "fingerprint": get_qs("fp", "chrome"),
-            "show": False
+            "fingerprint": get_qs("fp", "chrome")
         }
-        if network == "tcp":
-            outbound["streamSettings"]["tcpSettings"] = {}
+        sid = get_qs("sid")
+        if sid:
+            reality_settings["shortId"] = sid
+        outbound["streamSettings"]["realitySettings"] = reality_settings
             
     elif security == "tls":
         outbound["streamSettings"]["tlsSettings"] = {
             "serverName": get_qs("sni"),
-            "show": False,
             "fingerprint": get_qs("fp", "chrome")
         }
 
+    # Безопасное формирование транспорта
     if network == "grpc":
         outbound["streamSettings"]["grpcSettings"] = {
             "serviceName": get_qs("serviceName"),
             "multiMode": True
         }
     elif network == "ws":
-        outbound["streamSettings"]["wsSettings"] = {
-            "path": get_qs("path", "/")
-        }
+        ws_settings = {"path": get_qs("path", "/")}
         host = get_qs("host")
         if host:
-            outbound["streamSettings"]["wsSettings"]["headers"] = {"Host": host}
+            ws_settings["headers"] = {"Host": host}
+        outbound["streamSettings"]["wsSettings"] = ws_settings
 
     return outbound, tag
 
@@ -112,9 +116,12 @@ def main():
             eu_tags.append(tag)
             eu_idx += 1
 
-    # Собираем ЕДИНЫЙ валидный JSON-конфиг
+    # Защита от пустых списков (если парсер не нашел серверов, направим в direct)
+    if not ru_tags: ru_tags = ["direct"]
+    if not eu_tags: eu_tags = ["direct"]
+
+    # Собираем ЕДИНЫЙ валидный JSON-конфиг без поля remarks в корне
     unified_config = {
-        "remarks": "🇲🇦 🗽 LTE Авто (EU + RU балансировщик)",
         "dns": {
             "servers": ["https://8.8.8.8/dns-query", "https://8.8.8.8/dns-query"],
             "queryStrategy": "UseIP"
@@ -138,7 +145,6 @@ def main():
             }
         ],
         "log": {"loglevel": "warning"},
-        # Впихиваем все сервера в один список
         "outbounds": eu_outbounds + ru_outbounds + [
             {"tag": "direct", "protocol": "freedom"},
             {"tag": "block", "protocol": "blackhole"}
@@ -153,7 +159,6 @@ def main():
                     "outboundTag": "direct"
                 },
                 {
-                    # Направляем русские домены и сервисы в RU балансировщик
                     "type": "field",
                     "domain": [
                         "regexp:.*\\.ru$", "max.ru", "domain:2gis.ru", "domain:ads.x5.ru",
@@ -163,7 +168,6 @@ def main():
                     "balancerTag": "ru_balancer"
                 },
                 {
-                    # Весь остальной интернет идет через EU балансировщик
                     "type": "field",
                     "network": "tcp,udp",
                     "balancerTag": "eu_balancer"
@@ -199,4 +203,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
