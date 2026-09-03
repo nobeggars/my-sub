@@ -3,9 +3,14 @@ import urllib.parse
 import json
 
 URL = "https://raw.githubusercontent.com/zieng2/wl/refs/heads/main/vless_universal.txt"
+CHUNK_SIZE = 20  # Количество серверов в одном балансировщике
 
 def build_xray_config(remarks_name, outbounds, tags):
     """Строит структуру одного сервера-балансировщика"""
+    # Если список пустой, добавляем заглушку, чтобы Xray не крашился
+    if not tags:
+        tags = ["direct"]
+
     return {
         "remarks": remarks_name,
         "dns": {
@@ -66,7 +71,7 @@ def build_xray_config(remarks_name, outbounds, tags):
         },
         "observatory": {
             "enableConcurrency": True,
-            "probeInterval": "30s", # Пинг каждые 30 секунд
+            "probeInterval": "30s",
             "probeUrl": "https://www.google.com/generate_204",
             "subjectSelector": tags
         }
@@ -158,6 +163,7 @@ def main():
     ru_keywords = ['ru', 'russia', 'россия', 'moscow', 'st. petersburg', 'st.petersburg']
     ru_idx, eu_idx = 1, 1
 
+    # Собираем все сервера в общие списки
     for line in response.text.splitlines():
         line = line.strip()
         if not line: continue
@@ -178,25 +184,28 @@ def main():
             eu_tags.append(tag)
             eu_idx += 1
 
-    # Защита от пустых массивов
-    if not ru_tags: ru_tags = ["direct"]
-    if not eu_tags: eu_tags = ["direct"]
+    happ_json_array = []
 
-    # 1. Формируем конфиг для EU
-    eu_config = build_xray_config("🇲🇦 🗽 LTE EU Авто", eu_outbounds, eu_tags)
-    
-    # 2. Формируем конфиг для RU
-    ru_config = build_xray_config("🇲🇦 🗽 LTE RU Авто", ru_outbounds, ru_tags)
+    # Нарезаем список EU на куски по CHUNK_SIZE (20 штук)
+    eu_outbound_chunks = [eu_outbounds[i:i + CHUNK_SIZE] for i in range(0, len(eu_outbounds), CHUNK_SIZE)]
+    eu_tags_chunks = [eu_tags[i:i + CHUNK_SIZE] for i in range(0, len(eu_tags), CHUNK_SIZE)]
 
-    # 3. Делаем массив из 2 серверов специально для Happ! (Квадратные скобки)
-    happ_json_array = [eu_config, ru_config]
+    # Создаем отдельные профили для каждого куска EU
+    for i, (outbounds_chunk, tags_chunk) in enumerate(zip(eu_outbound_chunks, eu_tags_chunks), 1):
+        config_name = f"🇲🇦 🗽 LTE EU {i} | Авто"
+        happ_json_array.append(build_xray_config(config_name, outbounds_chunk, tags_chunk))
 
-    # Сохраняем в файл
+    # Добавляем RU профиль (целиком)
+    if ru_outbounds:
+        happ_json_array.append(build_xray_config("🇲🇦 🗽 LTE RU Авто", ru_outbounds, ru_tags))
+
+    # Сохраняем итоговый массив
     filename = "subscription.txt"
     with open(filename, "w", encoding="utf-8") as f:
         json.dump(happ_json_array, f, indent=2, ensure_ascii=False)
 
-    print("Успешно сформирован массив из 2 балансировщиков для Happ!")
+    print(f"Успешно сформировано балансировщиков EU: {len(eu_outbound_chunks)}, RU: 1")
 
 if __name__ == "__main__":
     main()
+
