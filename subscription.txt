@@ -1,6 +1,6 @@
 [
   {
-    "remarks": "🇲🇦 🗽 LTE EU Авто",
+    "remarks": "🇲🇦 🗽 LTE EU 1 | Авто",
     "dns": {
       "servers": [
         "https://8.8.8.8/dns-query",
@@ -636,6 +636,164 @@
         }
       },
       {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainMatcher": "hybrid",
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "max.ru",
+            "domain:2gis.ru",
+            "domain:ads.x5.ru",
+            "domain:2gis.com",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:ya.ru",
+            "domain:yandex.ru",
+            "domain:mail.ru",
+            "domain:gosuslugi.ru",
+            "domain:rutube.ru"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "inboundTag": [
+            "socks",
+            "http"
+          ],
+          "network": "tcp,udp",
+          "balancerTag": "best_ping_balancer"
+        }
+      ],
+      "balancers": [
+        {
+          "tag": "best_ping_balancer",
+          "selector": [
+            "cand-01",
+            "cand-02",
+            "cand-03",
+            "cand-04",
+            "cand-05",
+            "cand-06",
+            "cand-07",
+            "cand-08",
+            "cand-09",
+            "cand-10",
+            "cand-11",
+            "cand-12",
+            "cand-13",
+            "cand-14",
+            "cand-15",
+            "cand-16",
+            "cand-17",
+            "cand-18",
+            "cand-19",
+            "cand-20"
+          ],
+          "strategy": {
+            "type": "leastPing"
+          }
+        }
+      ]
+    },
+    "observatory": {
+      "enableConcurrency": true,
+      "probeInterval": "30s",
+      "probeUrl": "https://www.google.com/generate_204",
+      "subjectSelector": [
+        "cand-01",
+        "cand-02",
+        "cand-03",
+        "cand-04",
+        "cand-05",
+        "cand-06",
+        "cand-07",
+        "cand-08",
+        "cand-09",
+        "cand-10",
+        "cand-11",
+        "cand-12",
+        "cand-13",
+        "cand-14",
+        "cand-15",
+        "cand-16",
+        "cand-17",
+        "cand-18",
+        "cand-19",
+        "cand-20"
+      ]
+    }
+  },
+  {
+    "remarks": "🇲🇦 🗽 LTE EU 2 | Авто",
+    "dns": {
+      "servers": [
+        "https://8.8.8.8/dns-query",
+        "https://8.8.8.8/dns-query"
+      ],
+      "queryStrategy": "UseIP"
+    },
+    "inbounds": [
+      {
+        "tag": "socks",
+        "port": 10808,
+        "listen": "127.0.0.1",
+        "protocol": "socks",
+        "settings": {
+          "udp": true,
+          "auth": "noauth"
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      },
+      {
+        "tag": "http",
+        "port": 10809,
+        "listen": "127.0.0.1",
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      }
+    ],
+    "log": {
+      "loglevel": "warning"
+    },
+    "outbounds": [
+      {
         "tag": "cand-21",
         "protocol": "vless",
         "settings": {
@@ -1212,6 +1370,164 @@
         }
       },
       {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainMatcher": "hybrid",
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "max.ru",
+            "domain:2gis.ru",
+            "domain:ads.x5.ru",
+            "domain:2gis.com",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:ya.ru",
+            "domain:yandex.ru",
+            "domain:mail.ru",
+            "domain:gosuslugi.ru",
+            "domain:rutube.ru"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "inboundTag": [
+            "socks",
+            "http"
+          ],
+          "network": "tcp,udp",
+          "balancerTag": "best_ping_balancer"
+        }
+      ],
+      "balancers": [
+        {
+          "tag": "best_ping_balancer",
+          "selector": [
+            "cand-21",
+            "cand-22",
+            "cand-23",
+            "cand-24",
+            "cand-25",
+            "cand-26",
+            "cand-27",
+            "cand-28",
+            "cand-29",
+            "cand-30",
+            "cand-31",
+            "cand-32",
+            "cand-33",
+            "cand-34",
+            "cand-35",
+            "cand-36",
+            "cand-37",
+            "cand-38",
+            "cand-39",
+            "cand-40"
+          ],
+          "strategy": {
+            "type": "leastPing"
+          }
+        }
+      ]
+    },
+    "observatory": {
+      "enableConcurrency": true,
+      "probeInterval": "30s",
+      "probeUrl": "https://www.google.com/generate_204",
+      "subjectSelector": [
+        "cand-21",
+        "cand-22",
+        "cand-23",
+        "cand-24",
+        "cand-25",
+        "cand-26",
+        "cand-27",
+        "cand-28",
+        "cand-29",
+        "cand-30",
+        "cand-31",
+        "cand-32",
+        "cand-33",
+        "cand-34",
+        "cand-35",
+        "cand-36",
+        "cand-37",
+        "cand-38",
+        "cand-39",
+        "cand-40"
+      ]
+    }
+  },
+  {
+    "remarks": "🇲🇦 🗽 LTE EU 3 | Авто",
+    "dns": {
+      "servers": [
+        "https://8.8.8.8/dns-query",
+        "https://8.8.8.8/dns-query"
+      ],
+      "queryStrategy": "UseIP"
+    },
+    "inbounds": [
+      {
+        "tag": "socks",
+        "port": 10808,
+        "listen": "127.0.0.1",
+        "protocol": "socks",
+        "settings": {
+          "udp": true,
+          "auth": "noauth"
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      },
+      {
+        "tag": "http",
+        "port": 10809,
+        "listen": "127.0.0.1",
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      }
+    ],
+    "log": {
+      "loglevel": "warning"
+    },
+    "outbounds": [
+      {
         "tag": "cand-41",
         "protocol": "vless",
         "settings": {
@@ -1779,6 +2095,164 @@
           }
         }
       },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainMatcher": "hybrid",
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "max.ru",
+            "domain:2gis.ru",
+            "domain:ads.x5.ru",
+            "domain:2gis.com",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:ya.ru",
+            "domain:yandex.ru",
+            "domain:mail.ru",
+            "domain:gosuslugi.ru",
+            "domain:rutube.ru"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "inboundTag": [
+            "socks",
+            "http"
+          ],
+          "network": "tcp,udp",
+          "balancerTag": "best_ping_balancer"
+        }
+      ],
+      "balancers": [
+        {
+          "tag": "best_ping_balancer",
+          "selector": [
+            "cand-41",
+            "cand-42",
+            "cand-43",
+            "cand-44",
+            "cand-45",
+            "cand-46",
+            "cand-47",
+            "cand-48",
+            "cand-49",
+            "cand-50",
+            "cand-51",
+            "cand-52",
+            "cand-53",
+            "cand-54",
+            "cand-55",
+            "cand-56",
+            "cand-57",
+            "cand-58",
+            "cand-59",
+            "cand-60"
+          ],
+          "strategy": {
+            "type": "leastPing"
+          }
+        }
+      ]
+    },
+    "observatory": {
+      "enableConcurrency": true,
+      "probeInterval": "30s",
+      "probeUrl": "https://www.google.com/generate_204",
+      "subjectSelector": [
+        "cand-41",
+        "cand-42",
+        "cand-43",
+        "cand-44",
+        "cand-45",
+        "cand-46",
+        "cand-47",
+        "cand-48",
+        "cand-49",
+        "cand-50",
+        "cand-51",
+        "cand-52",
+        "cand-53",
+        "cand-54",
+        "cand-55",
+        "cand-56",
+        "cand-57",
+        "cand-58",
+        "cand-59",
+        "cand-60"
+      ]
+    }
+  },
+  {
+    "remarks": "🇲🇦 🗽 LTE EU 4 | Авто",
+    "dns": {
+      "servers": [
+        "https://8.8.8.8/dns-query",
+        "https://8.8.8.8/dns-query"
+      ],
+      "queryStrategy": "UseIP"
+    },
+    "inbounds": [
+      {
+        "tag": "socks",
+        "port": 10808,
+        "listen": "127.0.0.1",
+        "protocol": "socks",
+        "settings": {
+          "udp": true,
+          "auth": "noauth"
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      },
+      {
+        "tag": "http",
+        "port": 10809,
+        "listen": "127.0.0.1",
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      }
+    ],
+    "log": {
+      "loglevel": "warning"
+    },
+    "outbounds": [
       {
         "tag": "cand-61",
         "protocol": "vless",
@@ -2360,6 +2834,164 @@
           }
         }
       },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainMatcher": "hybrid",
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "max.ru",
+            "domain:2gis.ru",
+            "domain:ads.x5.ru",
+            "domain:2gis.com",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:ya.ru",
+            "domain:yandex.ru",
+            "domain:mail.ru",
+            "domain:gosuslugi.ru",
+            "domain:rutube.ru"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "inboundTag": [
+            "socks",
+            "http"
+          ],
+          "network": "tcp,udp",
+          "balancerTag": "best_ping_balancer"
+        }
+      ],
+      "balancers": [
+        {
+          "tag": "best_ping_balancer",
+          "selector": [
+            "cand-61",
+            "cand-62",
+            "cand-63",
+            "cand-64",
+            "cand-65",
+            "cand-66",
+            "cand-67",
+            "cand-68",
+            "cand-69",
+            "cand-70",
+            "cand-71",
+            "cand-72",
+            "cand-73",
+            "cand-74",
+            "cand-75",
+            "cand-76",
+            "cand-77",
+            "cand-78",
+            "cand-79",
+            "cand-80"
+          ],
+          "strategy": {
+            "type": "leastPing"
+          }
+        }
+      ]
+    },
+    "observatory": {
+      "enableConcurrency": true,
+      "probeInterval": "30s",
+      "probeUrl": "https://www.google.com/generate_204",
+      "subjectSelector": [
+        "cand-61",
+        "cand-62",
+        "cand-63",
+        "cand-64",
+        "cand-65",
+        "cand-66",
+        "cand-67",
+        "cand-68",
+        "cand-69",
+        "cand-70",
+        "cand-71",
+        "cand-72",
+        "cand-73",
+        "cand-74",
+        "cand-75",
+        "cand-76",
+        "cand-77",
+        "cand-78",
+        "cand-79",
+        "cand-80"
+      ]
+    }
+  },
+  {
+    "remarks": "🇲🇦 🗽 LTE EU 5 | Авто",
+    "dns": {
+      "servers": [
+        "https://8.8.8.8/dns-query",
+        "https://8.8.8.8/dns-query"
+      ],
+      "queryStrategy": "UseIP"
+    },
+    "inbounds": [
+      {
+        "tag": "socks",
+        "port": 10808,
+        "listen": "127.0.0.1",
+        "protocol": "socks",
+        "settings": {
+          "udp": true,
+          "auth": "noauth"
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      },
+      {
+        "tag": "http",
+        "port": 10809,
+        "listen": "127.0.0.1",
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      }
+    ],
+    "log": {
+      "loglevel": "warning"
+    },
+    "outbounds": [
       {
         "tag": "cand-81",
         "protocol": "vless",
@@ -2953,6 +3585,164 @@
         }
       },
       {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainMatcher": "hybrid",
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "max.ru",
+            "domain:2gis.ru",
+            "domain:ads.x5.ru",
+            "domain:2gis.com",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:ya.ru",
+            "domain:yandex.ru",
+            "domain:mail.ru",
+            "domain:gosuslugi.ru",
+            "domain:rutube.ru"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "inboundTag": [
+            "socks",
+            "http"
+          ],
+          "network": "tcp,udp",
+          "balancerTag": "best_ping_balancer"
+        }
+      ],
+      "balancers": [
+        {
+          "tag": "best_ping_balancer",
+          "selector": [
+            "cand-81",
+            "cand-82",
+            "cand-83",
+            "cand-84",
+            "cand-85",
+            "cand-86",
+            "cand-87",
+            "cand-88",
+            "cand-89",
+            "cand-90",
+            "cand-91",
+            "cand-92",
+            "cand-93",
+            "cand-94",
+            "cand-95",
+            "cand-96",
+            "cand-97",
+            "cand-98",
+            "cand-99",
+            "cand-100"
+          ],
+          "strategy": {
+            "type": "leastPing"
+          }
+        }
+      ]
+    },
+    "observatory": {
+      "enableConcurrency": true,
+      "probeInterval": "30s",
+      "probeUrl": "https://www.google.com/generate_204",
+      "subjectSelector": [
+        "cand-81",
+        "cand-82",
+        "cand-83",
+        "cand-84",
+        "cand-85",
+        "cand-86",
+        "cand-87",
+        "cand-88",
+        "cand-89",
+        "cand-90",
+        "cand-91",
+        "cand-92",
+        "cand-93",
+        "cand-94",
+        "cand-95",
+        "cand-96",
+        "cand-97",
+        "cand-98",
+        "cand-99",
+        "cand-100"
+      ]
+    }
+  },
+  {
+    "remarks": "🇲🇦 🗽 LTE EU 6 | Авто",
+    "dns": {
+      "servers": [
+        "https://8.8.8.8/dns-query",
+        "https://8.8.8.8/dns-query"
+      ],
+      "queryStrategy": "UseIP"
+    },
+    "inbounds": [
+      {
+        "tag": "socks",
+        "port": 10808,
+        "listen": "127.0.0.1",
+        "protocol": "socks",
+        "settings": {
+          "udp": true,
+          "auth": "noauth"
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      },
+      {
+        "tag": "http",
+        "port": 10809,
+        "listen": "127.0.0.1",
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      }
+    ],
+    "log": {
+      "loglevel": "warning"
+    },
+    "outbounds": [
+      {
         "tag": "cand-101",
         "protocol": "vless",
         "settings": {
@@ -3535,6 +4325,164 @@
         }
       },
       {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainMatcher": "hybrid",
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "max.ru",
+            "domain:2gis.ru",
+            "domain:ads.x5.ru",
+            "domain:2gis.com",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:ya.ru",
+            "domain:yandex.ru",
+            "domain:mail.ru",
+            "domain:gosuslugi.ru",
+            "domain:rutube.ru"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "inboundTag": [
+            "socks",
+            "http"
+          ],
+          "network": "tcp,udp",
+          "balancerTag": "best_ping_balancer"
+        }
+      ],
+      "balancers": [
+        {
+          "tag": "best_ping_balancer",
+          "selector": [
+            "cand-101",
+            "cand-102",
+            "cand-103",
+            "cand-104",
+            "cand-105",
+            "cand-106",
+            "cand-107",
+            "cand-108",
+            "cand-109",
+            "cand-110",
+            "cand-111",
+            "cand-112",
+            "cand-113",
+            "cand-114",
+            "cand-115",
+            "cand-116",
+            "cand-117",
+            "cand-118",
+            "cand-119",
+            "cand-120"
+          ],
+          "strategy": {
+            "type": "leastPing"
+          }
+        }
+      ]
+    },
+    "observatory": {
+      "enableConcurrency": true,
+      "probeInterval": "30s",
+      "probeUrl": "https://www.google.com/generate_204",
+      "subjectSelector": [
+        "cand-101",
+        "cand-102",
+        "cand-103",
+        "cand-104",
+        "cand-105",
+        "cand-106",
+        "cand-107",
+        "cand-108",
+        "cand-109",
+        "cand-110",
+        "cand-111",
+        "cand-112",
+        "cand-113",
+        "cand-114",
+        "cand-115",
+        "cand-116",
+        "cand-117",
+        "cand-118",
+        "cand-119",
+        "cand-120"
+      ]
+    }
+  },
+  {
+    "remarks": "🇲🇦 🗽 LTE EU 7 | Авто",
+    "dns": {
+      "servers": [
+        "https://8.8.8.8/dns-query",
+        "https://8.8.8.8/dns-query"
+      ],
+      "queryStrategy": "UseIP"
+    },
+    "inbounds": [
+      {
+        "tag": "socks",
+        "port": 10808,
+        "listen": "127.0.0.1",
+        "protocol": "socks",
+        "settings": {
+          "udp": true,
+          "auth": "noauth"
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      },
+      {
+        "tag": "http",
+        "port": 10809,
+        "listen": "127.0.0.1",
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      }
+    ],
+    "log": {
+      "loglevel": "warning"
+    },
+    "outbounds": [
+      {
         "tag": "cand-121",
         "protocol": "vless",
         "settings": {
@@ -4057,6 +5005,164 @@
           }
         }
       },
+      {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainMatcher": "hybrid",
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "max.ru",
+            "domain:2gis.ru",
+            "domain:ads.x5.ru",
+            "domain:2gis.com",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:ya.ru",
+            "domain:yandex.ru",
+            "domain:mail.ru",
+            "domain:gosuslugi.ru",
+            "domain:rutube.ru"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "inboundTag": [
+            "socks",
+            "http"
+          ],
+          "network": "tcp,udp",
+          "balancerTag": "best_ping_balancer"
+        }
+      ],
+      "balancers": [
+        {
+          "tag": "best_ping_balancer",
+          "selector": [
+            "cand-121",
+            "cand-122",
+            "cand-123",
+            "cand-124",
+            "cand-125",
+            "cand-126",
+            "cand-127",
+            "cand-128",
+            "cand-129",
+            "cand-130",
+            "cand-131",
+            "cand-132",
+            "cand-133",
+            "cand-134",
+            "cand-135",
+            "cand-136",
+            "cand-137",
+            "cand-138",
+            "cand-139",
+            "cand-140"
+          ],
+          "strategy": {
+            "type": "leastPing"
+          }
+        }
+      ]
+    },
+    "observatory": {
+      "enableConcurrency": true,
+      "probeInterval": "30s",
+      "probeUrl": "https://www.google.com/generate_204",
+      "subjectSelector": [
+        "cand-121",
+        "cand-122",
+        "cand-123",
+        "cand-124",
+        "cand-125",
+        "cand-126",
+        "cand-127",
+        "cand-128",
+        "cand-129",
+        "cand-130",
+        "cand-131",
+        "cand-132",
+        "cand-133",
+        "cand-134",
+        "cand-135",
+        "cand-136",
+        "cand-137",
+        "cand-138",
+        "cand-139",
+        "cand-140"
+      ]
+    }
+  },
+  {
+    "remarks": "🇲🇦 🗽 LTE EU 8 | Авто",
+    "dns": {
+      "servers": [
+        "https://8.8.8.8/dns-query",
+        "https://8.8.8.8/dns-query"
+      ],
+      "queryStrategy": "UseIP"
+    },
+    "inbounds": [
+      {
+        "tag": "socks",
+        "port": 10808,
+        "listen": "127.0.0.1",
+        "protocol": "socks",
+        "settings": {
+          "udp": true,
+          "auth": "noauth"
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      },
+      {
+        "tag": "http",
+        "port": 10809,
+        "listen": "127.0.0.1",
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      }
+    ],
+    "log": {
+      "loglevel": "warning"
+    },
+    "outbounds": [
       {
         "tag": "cand-141",
         "protocol": "vless",
@@ -4635,6 +5741,164 @@
         }
       },
       {
+        "tag": "direct",
+        "protocol": "freedom"
+      },
+      {
+        "tag": "block",
+        "protocol": "blackhole"
+      }
+    ],
+    "routing": {
+      "domainMatcher": "hybrid",
+      "domainStrategy": "IPIfNonMatch",
+      "rules": [
+        {
+          "type": "field",
+          "protocol": [
+            "bittorrent"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "domain": [
+            "max.ru",
+            "domain:2gis.ru",
+            "domain:ads.x5.ru",
+            "domain:2gis.com",
+            "domain:vk.com",
+            "domain:vk.ru",
+            "domain:ya.ru",
+            "domain:yandex.ru",
+            "domain:mail.ru",
+            "domain:gosuslugi.ru",
+            "domain:rutube.ru"
+          ],
+          "outboundTag": "direct"
+        },
+        {
+          "type": "field",
+          "inboundTag": [
+            "socks",
+            "http"
+          ],
+          "network": "tcp,udp",
+          "balancerTag": "best_ping_balancer"
+        }
+      ],
+      "balancers": [
+        {
+          "tag": "best_ping_balancer",
+          "selector": [
+            "cand-141",
+            "cand-142",
+            "cand-143",
+            "cand-144",
+            "cand-145",
+            "cand-146",
+            "cand-147",
+            "cand-148",
+            "cand-149",
+            "cand-150",
+            "cand-151",
+            "cand-152",
+            "cand-153",
+            "cand-154",
+            "cand-155",
+            "cand-156",
+            "cand-157",
+            "cand-158",
+            "cand-159",
+            "cand-160"
+          ],
+          "strategy": {
+            "type": "leastPing"
+          }
+        }
+      ]
+    },
+    "observatory": {
+      "enableConcurrency": true,
+      "probeInterval": "30s",
+      "probeUrl": "https://www.google.com/generate_204",
+      "subjectSelector": [
+        "cand-141",
+        "cand-142",
+        "cand-143",
+        "cand-144",
+        "cand-145",
+        "cand-146",
+        "cand-147",
+        "cand-148",
+        "cand-149",
+        "cand-150",
+        "cand-151",
+        "cand-152",
+        "cand-153",
+        "cand-154",
+        "cand-155",
+        "cand-156",
+        "cand-157",
+        "cand-158",
+        "cand-159",
+        "cand-160"
+      ]
+    }
+  },
+  {
+    "remarks": "🇲🇦 🗽 LTE EU 9 | Авто",
+    "dns": {
+      "servers": [
+        "https://8.8.8.8/dns-query",
+        "https://8.8.8.8/dns-query"
+      ],
+      "queryStrategy": "UseIP"
+    },
+    "inbounds": [
+      {
+        "tag": "socks",
+        "port": 10808,
+        "listen": "127.0.0.1",
+        "protocol": "socks",
+        "settings": {
+          "udp": true,
+          "auth": "noauth"
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      },
+      {
+        "tag": "http",
+        "port": 10809,
+        "listen": "127.0.0.1",
+        "protocol": "http",
+        "settings": {
+          "allowTransparent": false
+        },
+        "sniffing": {
+          "enabled": true,
+          "routeOnly": true,
+          "destOverride": [
+            "http",
+            "tls",
+            "quic"
+          ]
+        }
+      }
+    ],
+    "log": {
+      "loglevel": "warning"
+    },
+    "outbounds": [
+      {
         "tag": "cand-161",
         "protocol": "vless",
         "settings": {
@@ -4893,166 +6157,6 @@
         {
           "tag": "best_ping_balancer",
           "selector": [
-            "cand-01",
-            "cand-02",
-            "cand-03",
-            "cand-04",
-            "cand-05",
-            "cand-06",
-            "cand-07",
-            "cand-08",
-            "cand-09",
-            "cand-10",
-            "cand-11",
-            "cand-12",
-            "cand-13",
-            "cand-14",
-            "cand-15",
-            "cand-16",
-            "cand-17",
-            "cand-18",
-            "cand-19",
-            "cand-20",
-            "cand-21",
-            "cand-22",
-            "cand-23",
-            "cand-24",
-            "cand-25",
-            "cand-26",
-            "cand-27",
-            "cand-28",
-            "cand-29",
-            "cand-30",
-            "cand-31",
-            "cand-32",
-            "cand-33",
-            "cand-34",
-            "cand-35",
-            "cand-36",
-            "cand-37",
-            "cand-38",
-            "cand-39",
-            "cand-40",
-            "cand-41",
-            "cand-42",
-            "cand-43",
-            "cand-44",
-            "cand-45",
-            "cand-46",
-            "cand-47",
-            "cand-48",
-            "cand-49",
-            "cand-50",
-            "cand-51",
-            "cand-52",
-            "cand-53",
-            "cand-54",
-            "cand-55",
-            "cand-56",
-            "cand-57",
-            "cand-58",
-            "cand-59",
-            "cand-60",
-            "cand-61",
-            "cand-62",
-            "cand-63",
-            "cand-64",
-            "cand-65",
-            "cand-66",
-            "cand-67",
-            "cand-68",
-            "cand-69",
-            "cand-70",
-            "cand-71",
-            "cand-72",
-            "cand-73",
-            "cand-74",
-            "cand-75",
-            "cand-76",
-            "cand-77",
-            "cand-78",
-            "cand-79",
-            "cand-80",
-            "cand-81",
-            "cand-82",
-            "cand-83",
-            "cand-84",
-            "cand-85",
-            "cand-86",
-            "cand-87",
-            "cand-88",
-            "cand-89",
-            "cand-90",
-            "cand-91",
-            "cand-92",
-            "cand-93",
-            "cand-94",
-            "cand-95",
-            "cand-96",
-            "cand-97",
-            "cand-98",
-            "cand-99",
-            "cand-100",
-            "cand-101",
-            "cand-102",
-            "cand-103",
-            "cand-104",
-            "cand-105",
-            "cand-106",
-            "cand-107",
-            "cand-108",
-            "cand-109",
-            "cand-110",
-            "cand-111",
-            "cand-112",
-            "cand-113",
-            "cand-114",
-            "cand-115",
-            "cand-116",
-            "cand-117",
-            "cand-118",
-            "cand-119",
-            "cand-120",
-            "cand-121",
-            "cand-122",
-            "cand-123",
-            "cand-124",
-            "cand-125",
-            "cand-126",
-            "cand-127",
-            "cand-128",
-            "cand-129",
-            "cand-130",
-            "cand-131",
-            "cand-132",
-            "cand-133",
-            "cand-134",
-            "cand-135",
-            "cand-136",
-            "cand-137",
-            "cand-138",
-            "cand-139",
-            "cand-140",
-            "cand-141",
-            "cand-142",
-            "cand-143",
-            "cand-144",
-            "cand-145",
-            "cand-146",
-            "cand-147",
-            "cand-148",
-            "cand-149",
-            "cand-150",
-            "cand-151",
-            "cand-152",
-            "cand-153",
-            "cand-154",
-            "cand-155",
-            "cand-156",
-            "cand-157",
-            "cand-158",
-            "cand-159",
-            "cand-160",
             "cand-161",
             "cand-162",
             "cand-163",
@@ -5072,166 +6176,6 @@
       "probeInterval": "30s",
       "probeUrl": "https://www.google.com/generate_204",
       "subjectSelector": [
-        "cand-01",
-        "cand-02",
-        "cand-03",
-        "cand-04",
-        "cand-05",
-        "cand-06",
-        "cand-07",
-        "cand-08",
-        "cand-09",
-        "cand-10",
-        "cand-11",
-        "cand-12",
-        "cand-13",
-        "cand-14",
-        "cand-15",
-        "cand-16",
-        "cand-17",
-        "cand-18",
-        "cand-19",
-        "cand-20",
-        "cand-21",
-        "cand-22",
-        "cand-23",
-        "cand-24",
-        "cand-25",
-        "cand-26",
-        "cand-27",
-        "cand-28",
-        "cand-29",
-        "cand-30",
-        "cand-31",
-        "cand-32",
-        "cand-33",
-        "cand-34",
-        "cand-35",
-        "cand-36",
-        "cand-37",
-        "cand-38",
-        "cand-39",
-        "cand-40",
-        "cand-41",
-        "cand-42",
-        "cand-43",
-        "cand-44",
-        "cand-45",
-        "cand-46",
-        "cand-47",
-        "cand-48",
-        "cand-49",
-        "cand-50",
-        "cand-51",
-        "cand-52",
-        "cand-53",
-        "cand-54",
-        "cand-55",
-        "cand-56",
-        "cand-57",
-        "cand-58",
-        "cand-59",
-        "cand-60",
-        "cand-61",
-        "cand-62",
-        "cand-63",
-        "cand-64",
-        "cand-65",
-        "cand-66",
-        "cand-67",
-        "cand-68",
-        "cand-69",
-        "cand-70",
-        "cand-71",
-        "cand-72",
-        "cand-73",
-        "cand-74",
-        "cand-75",
-        "cand-76",
-        "cand-77",
-        "cand-78",
-        "cand-79",
-        "cand-80",
-        "cand-81",
-        "cand-82",
-        "cand-83",
-        "cand-84",
-        "cand-85",
-        "cand-86",
-        "cand-87",
-        "cand-88",
-        "cand-89",
-        "cand-90",
-        "cand-91",
-        "cand-92",
-        "cand-93",
-        "cand-94",
-        "cand-95",
-        "cand-96",
-        "cand-97",
-        "cand-98",
-        "cand-99",
-        "cand-100",
-        "cand-101",
-        "cand-102",
-        "cand-103",
-        "cand-104",
-        "cand-105",
-        "cand-106",
-        "cand-107",
-        "cand-108",
-        "cand-109",
-        "cand-110",
-        "cand-111",
-        "cand-112",
-        "cand-113",
-        "cand-114",
-        "cand-115",
-        "cand-116",
-        "cand-117",
-        "cand-118",
-        "cand-119",
-        "cand-120",
-        "cand-121",
-        "cand-122",
-        "cand-123",
-        "cand-124",
-        "cand-125",
-        "cand-126",
-        "cand-127",
-        "cand-128",
-        "cand-129",
-        "cand-130",
-        "cand-131",
-        "cand-132",
-        "cand-133",
-        "cand-134",
-        "cand-135",
-        "cand-136",
-        "cand-137",
-        "cand-138",
-        "cand-139",
-        "cand-140",
-        "cand-141",
-        "cand-142",
-        "cand-143",
-        "cand-144",
-        "cand-145",
-        "cand-146",
-        "cand-147",
-        "cand-148",
-        "cand-149",
-        "cand-150",
-        "cand-151",
-        "cand-152",
-        "cand-153",
-        "cand-154",
-        "cand-155",
-        "cand-156",
-        "cand-157",
-        "cand-158",
-        "cand-159",
-        "cand-160",
         "cand-161",
         "cand-162",
         "cand-163",
@@ -5239,126 +6183,6 @@
         "cand-165",
         "cand-166",
         "cand-167"
-      ]
-    }
-  },
-  {
-    "remarks": "🇲🇦 🗽 LTE RU Авто",
-    "dns": {
-      "servers": [
-        "https://8.8.8.8/dns-query",
-        "https://8.8.8.8/dns-query"
-      ],
-      "queryStrategy": "UseIP"
-    },
-    "inbounds": [
-      {
-        "tag": "socks",
-        "port": 10808,
-        "listen": "127.0.0.1",
-        "protocol": "socks",
-        "settings": {
-          "udp": true,
-          "auth": "noauth"
-        },
-        "sniffing": {
-          "enabled": true,
-          "routeOnly": true,
-          "destOverride": [
-            "http",
-            "tls",
-            "quic"
-          ]
-        }
-      },
-      {
-        "tag": "http",
-        "port": 10809,
-        "listen": "127.0.0.1",
-        "protocol": "http",
-        "settings": {
-          "allowTransparent": false
-        },
-        "sniffing": {
-          "enabled": true,
-          "routeOnly": true,
-          "destOverride": [
-            "http",
-            "tls",
-            "quic"
-          ]
-        }
-      }
-    ],
-    "log": {
-      "loglevel": "warning"
-    },
-    "outbounds": [
-      {
-        "tag": "direct",
-        "protocol": "freedom"
-      },
-      {
-        "tag": "block",
-        "protocol": "blackhole"
-      }
-    ],
-    "routing": {
-      "domainMatcher": "hybrid",
-      "domainStrategy": "IPIfNonMatch",
-      "rules": [
-        {
-          "type": "field",
-          "protocol": [
-            "bittorrent"
-          ],
-          "outboundTag": "direct"
-        },
-        {
-          "type": "field",
-          "domain": [
-            "max.ru",
-            "domain:2gis.ru",
-            "domain:ads.x5.ru",
-            "domain:2gis.com",
-            "domain:vk.com",
-            "domain:vk.ru",
-            "domain:ya.ru",
-            "domain:yandex.ru",
-            "domain:mail.ru",
-            "domain:gosuslugi.ru",
-            "domain:rutube.ru"
-          ],
-          "outboundTag": "direct"
-        },
-        {
-          "type": "field",
-          "inboundTag": [
-            "socks",
-            "http"
-          ],
-          "network": "tcp,udp",
-          "balancerTag": "best_ping_balancer"
-        }
-      ],
-      "balancers": [
-        {
-          "tag": "best_ping_balancer",
-          "selector": [
-            "direct"
-          ],
-          "strategy": {
-            "type": "leastPing"
-          }
-        }
-      ]
-    },
-    "observatory": {
-      "enableConcurrency": true,
-      "probeInterval": "30s",
-      "probeUrl": "https://www.google.com/generate_204",
-      "subjectSelector": [
-        "direct"
       ]
     }
   }
