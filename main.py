@@ -4,8 +4,76 @@ import json
 
 URL = "https://raw.githubusercontent.com/zieng2/wl/refs/heads/main/vless_universal.txt"
 
-def parse_vless_url(url, prefix, index):
-    """Разбирает vless:// ссылку и генерирует чистый outbound Xray"""
+def build_xray_config(remarks_name, outbounds, tags):
+    """Строит структуру одного сервера-балансировщика"""
+    return {
+        "remarks": remarks_name,
+        "dns": {
+            "servers": ["https://8.8.8.8/dns-query", "https://8.8.8.8/dns-query"],
+            "queryStrategy": "UseIP"
+        },
+        "inbounds": [
+            {
+                "tag": "socks",
+                "port": 10808,
+                "listen": "127.0.0.1",
+                "protocol": "socks",
+                "settings": {"udp": True, "auth": "noauth"},
+                "sniffing": {"enabled": True, "routeOnly": True, "destOverride": ["http", "tls", "quic"]}
+            },
+            {
+                "tag": "http",
+                "port": 10809,
+                "listen": "127.0.0.1",
+                "protocol": "http",
+                "settings": {"allowTransparent": False},
+                "sniffing": {"enabled": True, "routeOnly": True, "destOverride": ["http", "tls", "quic"]}
+            }
+        ],
+        "log": {"loglevel": "warning"},
+        "outbounds": outbounds + [
+            {"tag": "direct", "protocol": "freedom"},
+            {"tag": "block", "protocol": "blackhole"}
+        ],
+        "routing": {
+            "domainMatcher": "hybrid",
+            "domainStrategy": "IPIfNonMatch",
+            "rules": [
+                {"type": "field", "protocol": ["bittorrent"], "outboundTag": "direct"},
+                {
+                    "type": "field",
+                    "domain": [
+                        "max.ru", "domain:2gis.ru", "domain:ads.x5.ru", "domain:2gis.com",
+                        "domain:vk.com", "domain:vk.ru", "domain:ya.ru", "domain:yandex.ru",
+                        "domain:mail.ru", "domain:gosuslugi.ru", "domain:rutube.ru"
+                    ],
+                    "outboundTag": "direct"
+                },
+                {
+                    "type": "field",
+                    "inboundTag": ["socks", "http"],
+                    "network": "tcp,udp",
+                    "balancerTag": "best_ping_balancer"
+                }
+            ],
+            "balancers": [
+                {
+                    "tag": "best_ping_balancer",
+                    "selector": tags,
+                    "strategy": {"type": "leastPing"}
+                }
+            ]
+        },
+        "observatory": {
+            "enableConcurrency": True,
+            "probeInterval": "30s", # Пинг каждые 30 секунд
+            "probeUrl": "https://www.google.com/generate_204",
+            "subjectSelector": tags
+        }
+    }
+
+def parse_vless_url(url, index):
+    """Разбирает одну ссылку VLESS в объект outbound"""
     parsed = urllib.parse.urlparse(url)
     if parsed.scheme != 'vless':
         return None, None
@@ -19,9 +87,8 @@ def parse_vless_url(url, prefix, index):
 
     security = get_qs("security", "none")
     network = get_qs("type", "tcp")
-    tag = f"cand-{prefix}-{index:02d}"
+    tag = f"cand-{index:02d}"
 
-    # Формируем юзера, добавляем flow ТОЛЬКО если он реально есть
     user = {
         "id": uuid,
         "encryption": get_qs("encryption", "none")
@@ -46,7 +113,6 @@ def parse_vless_url(url, prefix, index):
         }
     }
 
-    # Безопасное формирование Reality/TLS без лишних ключей
     if security == "reality":
         reality_settings = {
             "serverName": get_qs("sni"),
@@ -64,7 +130,6 @@ def parse_vless_url(url, prefix, index):
             "fingerprint": get_qs("fp", "chrome")
         }
 
-    # Безопасное формирование транспорта
     if network == "grpc":
         outbound["streamSettings"]["grpcSettings"] = {
             "serviceName": get_qs("serviceName"),
@@ -80,12 +145,11 @@ def parse_vless_url(url, prefix, index):
     return outbound, tag
 
 def main():
-    print("Качаем подписку...")
     try:
         response = requests.get(URL, timeout=15)
         response.raise_for_status()
     except Exception as e:
-        print(f"Ошибка при скачивании: {e}")
+        print(f"Ошибка скачивания: {e}")
         return
 
     ru_outbounds, eu_outbounds = [], []
@@ -101,10 +165,8 @@ def main():
         name_lower = urllib.parse.unquote(urllib.parse.urlparse(line).fragment).lower()
         is_ru = any(k in name_lower for k in ru_keywords)
         
-        prefix = "ru" if is_ru else "eu"
         idx = ru_idx if is_ru else eu_idx
-        
-        outbound, tag = parse_vless_url(line, prefix, idx)
+        outbound, tag = parse_vless_url(line, idx)
         if not outbound: continue
 
         if is_ru:
@@ -116,90 +178,25 @@ def main():
             eu_tags.append(tag)
             eu_idx += 1
 
-    # Защита от пустых списков (если парсер не нашел серверов, направим в direct)
+    # Защита от пустых массивов
     if not ru_tags: ru_tags = ["direct"]
     if not eu_tags: eu_tags = ["direct"]
 
-    # Собираем ЕДИНЫЙ валидный JSON-конфиг без поля remarks в корне
-    unified_config = {
-        "dns": {
-            "servers": ["https://8.8.8.8/dns-query", "https://8.8.8.8/dns-query"],
-            "queryStrategy": "UseIP"
-        },
-        "inbounds": [
-            {
-                "tag": "socks",
-                "port": 10808,
-                "listen": "127.0.0.1",
-                "protocol": "socks",
-                "settings": {"udp": True, "auth": "noauth"},
-                "sniffing": {"enabled": True, "routeOnly": True, "destOverride": ["http", "tls", "quic"]}
-            },
-            {
-                "tag": "http",
-                "port": 10809,
-                "listen": "127.0.0.1",
-                "protocol": "http",
-                "settings": {"allowTransparent": False},
-                "sniffing": {"enabled": True, "routeOnly": True, "destOverride": ["http", "tls", "quic"]}
-            }
-        ],
-        "log": {"loglevel": "warning"},
-        "outbounds": eu_outbounds + ru_outbounds + [
-            {"tag": "direct", "protocol": "freedom"},
-            {"tag": "block", "protocol": "blackhole"}
-        ],
-        "routing": {
-            "domainMatcher": "hybrid",
-            "domainStrategy": "IPIfNonMatch",
-            "rules": [
-                {
-                    "type": "field",
-                    "protocol": ["bittorrent"],
-                    "outboundTag": "direct"
-                },
-                {
-                    "type": "field",
-                    "domain": [
-                        "regexp:.*\\.ru$", "max.ru", "domain:2gis.ru", "domain:ads.x5.ru",
-                        "domain:2gis.com", "domain:vk.com", "domain:ya.ru", "domain:yandex.ru",
-                        "domain:mail.ru", "domain:gosuslugi.ru", "domain:rutube.ru"
-                    ],
-                    "balancerTag": "ru_balancer"
-                },
-                {
-                    "type": "field",
-                    "network": "tcp,udp",
-                    "balancerTag": "eu_balancer"
-                }
-            ],
-            "balancers": [
-                {
-                    "tag": "eu_balancer",
-                    "selector": eu_tags,
-                    "strategy": {"type": "leastPing"}
-                },
-                {
-                    "tag": "ru_balancer",
-                    "selector": ru_tags,
-                    "strategy": {"type": "leastPing"}
-                }
-            ]
-        },
-        "observatory": {
-            "enableConcurrency": True,
-            "probeInterval": "1m",
-            "probeUrl": "https://www.google.com/generate_204",
-            "subjectSelector": eu_tags + ru_tags
-        }
-    }
+    # 1. Формируем конфиг для EU
+    eu_config = build_xray_config("🇲🇦 🗽 LTE EU Авто", eu_outbounds, eu_tags)
+    
+    # 2. Формируем конфиг для RU
+    ru_config = build_xray_config("🇲🇦 🗽 LTE RU Авто", ru_outbounds, ru_tags)
 
+    # 3. Делаем массив из 2 серверов специально для Happ! (Квадратные скобки)
+    happ_json_array = [eu_config, ru_config]
+
+    # Сохраняем в файл
     filename = "subscription.txt"
     with open(filename, "w", encoding="utf-8") as f:
-        json.dump(unified_config, f, indent=2, ensure_ascii=False)
+        json.dump(happ_json_array, f, indent=2, ensure_ascii=False)
 
-    print(f"Готово! Сохранено в {filename}.")
-    print(f"В конфиг зашито серверов EU: {len(eu_tags)}, RU: {len(ru_tags)}")
+    print("Успешно сформирован массив из 2 балансировщиков для Happ!")
 
 if __name__ == "__main__":
     main()
